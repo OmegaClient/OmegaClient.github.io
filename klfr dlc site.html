@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLFR DLC</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at top center, rgba(139, 0, 0, 0.6) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(to bottom, rgba(20, 0, 0, 0.8), transparent);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.8;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 1;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .register-btn, .login-btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .register-btn {
+            background: transparent;
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .register-btn:hover {
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .login-btn {
+            background: #ff3333;
+            color: white;
+            border: none;
+        }
+
+        .login-btn:hover {
+            background: #ff5555;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 2;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            color: #ff3333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h1 {
+            font-size: 60px;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #ccc;
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 50px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #ff3333;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #ff5555;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #666;
+            color: #ccc;
+        }
+
+        .btn-secondary:hover {
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 50px;
+            z-index: 2;
+        }
+
+        .stat-item {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-radius: 20px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            border: 1px solid #333;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #ff6b6b;
+        }
+
+        .modal h2 {
+            font-size: 32px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+        }
+
+        .subscription-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sub-option {
+            padding: 20px;
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sub-option:hover {
+            background: rgba(255, 51, 51, 0.15);
+            border: 1px solid #ff3333;
+        }
+
+        .sub-text {
+            text-align: left;
+        }
+
+        .sub-title {
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .sub-desc {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .sub-price {
+            font-size: 28px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            .action-buttons, .stats { flex-direction: column; align-items: center; }
+            nav ul { gap: 15px; font-size: 14px; }
+            header { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a onclick="alert('Переход на Home')">🏠 Home</a></li>
+                <li><a onclick="alert('Переход на Advantages')">🎯 Advantages</a></li>
+                <li><a onclick="alert('Переход на Video')">📹 Video</a></li>
+                <li><a onclick="alert('Переход на FAQ')">❓ Faq</a></li>
+                <li><a class="products-link">🛒 Products</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="register-btn" onclick="alert('Открытие регистрации')">👤 Register</button>
+            <button class="login-btn" onclick="alert('Открытие входа')">🔴 Login</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="logo">🔴 KLFR DLC</div>
+        <h1>Welcome to KLFR DLC</h1>
+        <p class="subtitle">Максимум силы, минимум усилий — KLFR DLC,<br>твой путь к победе.</p>
+        <div class="action-buttons">
+            <button class="btn-primary products-link">🛒 Products</button>
+            <button class="btn-secondary" onclick="alert('Переход на Advantages')">🎯 Advantages</button>
+        </div>
+    </main>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-number">19,618</div>
+            <div class="stat-label">👥 Users</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">15,938</div>
+            <div class="stat-label">▶️ Launches</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">271</div>
+            <div class="stat-label">🔄 Updates</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">1,815</div>
+            <div class="stat-label">📅 Days</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подписки -->
+    <div id="subscriptionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Выберите подписку</h2>
+            <div class="subscription-options">
+                <div class="sub-option" onclick="event.stopPropagation(); window.location.href='https://funpay.com/users/16923470/'">
+                    <div class="sub-text">
+                        <div class="sub-title">Навсегда</div>
+                        <div class="sub-desc">Безлимитный доступ навсегда</div>
+                    </div>
+                    <div class="sub-price">400 ₽</div>
+                </div>
+                <div class="sub-option" onclick="event.stopPropagation(); window.location.href='https://funpay.com/users/16923470/'">
+                    <div class="sub-text">
+                        <div class="sub-title">3 месяца</div>
+                        <div class="sub-desc">Доступ на 90 дней</div>
+                    </div>
+                    <div class="sub-price">140 ₽</div>
+                </div>
+                <div class="sub-option" onclick="event.stopPropagation(); window.location.href='https://funpay.com/users/16923470/'">
+                    <div class="sub-text">
+                        <div class="sub-title">Год</div>
+                        <div class="sub-desc">Доступ на 365 дней</div>
+                    </div>
+                    <div class="sub-price">240 ₽</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Открытие модалки
+        document.querySelectorAll('.products-link').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation(); // на всякий случай
+                document.getElementById('subscriptionModal').style.display = 'flex';
+            });
+        });
+
+        // Закрытие по крестику
+        document.querySelector('.close').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('subscriptionModal').style.display = 'none';
+        });
+
+        // Закрытие по клику на фон
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('subscriptionModal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
